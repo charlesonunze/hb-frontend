@@ -31,11 +31,40 @@ class Board extends Component {
       }
     }
 
-    this.setState({ grid, numOfSquares });
+    const middlePosition = this.getMiddlePosition(grid);
+    const currentPosition = `${middlePosition.x}${middlePosition.y}`;
+
+    grid = this.renderPlayer(grid, middlePosition);
+
+    this.setState({ grid, numOfSquares, currentPosition });
   }
 
   getBlankNode() {
     return <Node key={genRandString()} />;
+  }
+
+  renderPlayer(grid, middlePosition) {
+    const { x, y } = middlePosition;
+
+    grid[x][y] = this.getPlayerNode();
+
+    return grid;
+  }
+
+  getPlayerNode() {
+    return (
+      <Node key={genRandString()}>
+        <p style={{ margin: "0 auto" }}>mario</p>
+      </Node>
+    );
+  }
+
+  getMiddlePosition(grid) {
+    const row = grid[Math.floor(grid.length / 2)];
+    const x = Math.floor(grid.length / 2);
+    const y = Math.floor(row.length / 2);
+
+    return { x, y };
   }
 
   render() {
