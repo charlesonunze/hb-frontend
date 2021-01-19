@@ -13,7 +13,14 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    const { numOfSquares } = this.state;
+    let numOfSquares = prompt("Please enter your square size");
+
+    while (numOfSquares < 5) {
+      numOfSquares = prompt(
+        `Please enter a number greater than ${numOfSquares}`
+      );
+    }
+
     let grid = [];
 
     for (let i = 0; i < numOfSquares; i++) {
@@ -24,7 +31,7 @@ class Board extends Component {
       }
     }
 
-    this.setState({ grid });
+    this.setState({ grid, numOfSquares });
   }
 
   getBlankNode() {
