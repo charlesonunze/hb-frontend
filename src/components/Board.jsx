@@ -31,6 +31,8 @@ class Board extends Component {
       }
     }
 
+    window.addEventListener("keydown", this.handleKeyPress);
+
     const middlePosition = this.getMiddlePosition(grid);
     const currentPosition = `${middlePosition.x}${middlePosition.y}`;
     const spritePositions = this.getSpritePositions(
@@ -40,7 +42,7 @@ class Board extends Component {
 
     grid = this.paintBoard(grid, middlePosition, spritePositions);
 
-    this.setState({ grid, numOfSquares, currentPosition });
+    this.setState({ grid, numOfSquares, currentPosition, spritePositions });
   }
 
   paintBoard(grid, middlePosition, spritePositions) {
@@ -80,6 +82,153 @@ class Board extends Component {
     return grid;
   }
 
+  removeSprite() {
+    const { currentPosition, spritePositions } = this.state;
+
+    const _set = new Set(spritePositions);
+
+    if (_set.has(currentPosition)) _set.delete(currentPosition);
+
+    this.setState({ spritePositions: Array.from(_set) });
+
+    if (this.state.spritePositions.length < 1) {
+      return this.setState({ gameDone: true });
+    }
+  }
+
+  handleKeyPress = (e) => {
+    switch (e.keyCode) {
+      case 37:
+        this.moveLeft();
+        break;
+
+      case 38:
+        this.moveUp();
+        break;
+
+      case 39:
+        this.moveRight();
+        break;
+
+      case 40:
+        this.moveDown();
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  moveLeft() {
+    const { currentPosition, grid, moveCount, gameDone } = { ...this.state };
+
+    if (gameDone) return;
+
+    let x = parseInt(currentPosition[0]);
+    let y = parseInt(currentPosition[1]);
+
+    grid[x][y] = this.getBlankNode();
+
+    if (y === 0) return;
+
+    y -= 1;
+
+    grid[x][y] = this.getPlayerNode();
+
+    this.setState({
+      grid,
+      currentPosition: `${x}${y}`,
+      moveCount: moveCount + 1,
+    });
+
+    this.removeSprite();
+  }
+
+  moveRight() {
+    const { currentPosition, numOfSquares, grid, moveCount, gameDone } = {
+      ...this.state,
+    };
+
+    if (gameDone) return;
+
+    const last = numOfSquares - 1;
+
+    let x = parseInt(currentPosition[0]);
+    let y = parseInt(currentPosition[1]);
+
+    grid[x][y] = this.getBlankNode();
+
+    if (y === last) return;
+
+    y += 1;
+
+    grid[x][y] = this.getPlayerNode();
+
+    this.setState({
+      grid,
+      currentPosition: `${x}${y}`,
+      moveCount: moveCount + 1,
+    });
+
+    this.removeSprite();
+  }
+
+  moveUp() {
+    const { currentPosition, grid, moveCount, gameDone } = { ...this.state };
+
+    if (gameDone) return;
+
+    let x = parseInt(currentPosition[0]);
+    let y = parseInt(currentPosition[1]);
+
+    grid[x][y] = <Node key={genRandString()} />;
+
+    if (x === 0) return;
+
+    x -= 1;
+
+    grid[x][y] = this.getPlayerNode();
+
+    this.setState({
+      grid,
+      currentPosition: `${x}${y}`,
+      moveCount: moveCount + 1,
+    });
+
+    this.removeSprite();
+  }
+
+  moveDown() {
+    const { currentPosition, numOfSquares, grid, moveCount, gameDone } = {
+      ...this.state,
+    };
+
+    if (gameDone) return;
+
+    const last = numOfSquares - 1;
+
+    let x = parseInt(currentPosition[0]);
+    let y = parseInt(currentPosition[1]);
+
+    grid[x][y] = this.getBlankNode();
+
+    if (x === last) return;
+
+    if (x === last && y === last) return;
+
+    x += 1;
+
+    grid[x][y] = this.getPlayerNode();
+
+    this.setState({
+      grid,
+      currentPosition: `${x}${y}`,
+      moveCount: moveCount + 1,
+    });
+
+    this.removeSprite();
+  }
+
   getSpriteNode() {
     return (
       <Node key={genRandString()}>
@@ -99,6 +248,10 @@ class Board extends Component {
   getSpritePositions(positions, numOfSquares) {
     let middlePosition = `${positions.x}${positions.y}`;
     return genRandPositions(numOfSquares, middlePosition);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.handleKeyPress);
   }
 
   render() {
