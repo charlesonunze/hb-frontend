@@ -1,6 +1,10 @@
 import React, { Component } from "react";
-import { genRandString, genRandPositions } from "../utils";
+
 import Node from "./Node";
+import { genRandString, genRandPositions } from "../utils";
+
+import mario from "../assets/images/mario.png";
+import mushroom from "../assets/images/mushroom.png";
 
 class Board extends Component {
   state = {
@@ -61,14 +65,6 @@ class Board extends Component {
     grid[x][y] = this.getPlayerNode();
 
     return grid;
-  }
-
-  getPlayerNode() {
-    return (
-      <Node key={genRandString()}>
-        <p style={{ margin: "0 auto" }}>mario</p>
-      </Node>
-    );
   }
 
   renderSprites(grid, spritePositions) {
@@ -229,10 +225,24 @@ class Board extends Component {
     this.removeSprite();
   }
 
+  getPlayerNode() {
+    return (
+      <Node key={genRandString()}>
+        <img src={mario} alt="mario" width="50" height="50" />
+      </Node>
+    );
+  }
+
   getSpriteNode() {
     return (
       <Node key={genRandString()}>
-        <h1 style={{ margin: "0 auto" }}>O</h1>
+        <img
+          src={mushroom}
+          alt="mushroom"
+          width="25"
+          height="25"
+          style={{ marginTop: "10px" }}
+        />
       </Node>
     );
   }
