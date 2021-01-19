@@ -8,3 +8,34 @@ export const genRandString = () => {
   }
   return result;
 }
+
+export const genRandNumber = (max, min = 0) => {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+let spritePositions = [];
+
+export const genRandPositions = (numOfSquares, middlePosition) => {
+  // console.log(numOfSquares);
+  const max = numOfSquares - 1;
+  const _set = new Set(spritePositions);
+
+  for (let i = 0; i < numOfSquares; i++) {
+    let x = genRandNumber(max);
+    let y = genRandNumber(max);
+    let newPosition = `${x}${y}`;
+
+    _set.add(newPosition)
+  }
+
+  if (_set.has(middlePosition))
+    _set.delete(middlePosition);
+
+  spritePositions = Array.from(_set)
+
+  if (spritePositions.length >= numOfSquares) {
+    return spritePositions.slice(0, numOfSquares)
+  }
+
+  return genRandPositions(numOfSquares, middlePosition)
+}

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { genRandString } from "../utils";
+import { genRandString, genRandPositions } from "../utils";
 import Node from "./Node";
 
 class Board extends Component {
@@ -13,11 +13,11 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    let numOfSquares = prompt("Please enter your square size");
+    let numOfSquares = Number(window.prompt("Type a number", ""));
 
     while (numOfSquares < 5) {
-      numOfSquares = prompt(
-        `Please enter a number greater than ${numOfSquares}`
+      numOfSquares = Number(
+        window.prompt(`Please enter a number greater than ${numOfSquares}`, "")
       );
     }
 
@@ -33,10 +33,20 @@ class Board extends Component {
 
     const middlePosition = this.getMiddlePosition(grid);
     const currentPosition = `${middlePosition.x}${middlePosition.y}`;
+    const spritePositions = this.getSpritePositions(
+      middlePosition,
+      numOfSquares
+    );
 
-    grid = this.renderPlayer(grid, middlePosition);
+    grid = this.paintBoard(grid, middlePosition, spritePositions);
 
     this.setState({ grid, numOfSquares, currentPosition });
+  }
+
+  paintBoard(grid, middlePosition, spritePositions) {
+    this.renderSprites(grid, spritePositions);
+    this.renderPlayer(grid, middlePosition);
+    return grid;
   }
 
   getBlankNode() {
@@ -59,12 +69,36 @@ class Board extends Component {
     );
   }
 
+  renderSprites(grid, spritePositions) {
+    for (let i = 0; i < spritePositions.length; i++) {
+      const x = spritePositions[i][0];
+      const y = spritePositions[i][1];
+
+      grid[x][y] = this.getSpriteNode();
+    }
+
+    return grid;
+  }
+
+  getSpriteNode() {
+    return (
+      <Node key={genRandString()}>
+        <h1 style={{ margin: "0 auto" }}>O</h1>
+      </Node>
+    );
+  }
+
   getMiddlePosition(grid) {
     const row = grid[Math.floor(grid.length / 2)];
     const x = Math.floor(grid.length / 2);
     const y = Math.floor(row.length / 2);
 
     return { x, y };
+  }
+
+  getSpritePositions(positions, numOfSquares) {
+    let middlePosition = `${positions.x}${positions.y}`;
+    return genRandPositions(numOfSquares, middlePosition);
   }
 
   render() {
