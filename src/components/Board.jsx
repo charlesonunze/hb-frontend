@@ -17,7 +17,9 @@ class Board extends Component {
   };
 
   componentDidMount() {
-    let numOfSquares = Number(window.prompt("Type a number", ""));
+    let numOfSquares = Number(
+      window.prompt("Please enter the number of squares:", "")
+    );
 
     while (numOfSquares < 5) {
       numOfSquares = Number(
@@ -279,10 +281,10 @@ class Board extends Component {
       <div>
         <div style={{ textAlign: "center" }}>
           <p>
-            Number of moves: <b>{moveCount}</b>{" "}
+            Number of moves: <b>{moveCount}</b>
           </p>
 
-          {gameDone ? alert(`done ${moveCount}`) : null}
+          {gameDone ? alert(`Total moves: ${moveCount}`) : null}
         </div>
 
         <br />
@@ -296,6 +298,7 @@ class Board extends Component {
             flexWrap: "wrap",
             textAlign: "center",
             margin: "0 auto",
+            border: "2px solid pink",
           }}
         >
           {grid}
